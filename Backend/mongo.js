@@ -7,10 +7,12 @@ const getStudentT1deets = async(req, res, next)=>
     try {
         await client.connect();
         const db = client.db('student');
-        const student = await db.collection("Mltestones").find((st) => {
+        const student = await db.collection("Mltestones").find(/*(st) => {
             //return st."roll no" === req.body.rno;
-        });
+        }*/).toArray();
     } catch (error) {
         return res.json({message: 'Could not get the T1 details of student.'})
     }
+    client.close();
+    res.json(student);
 }

@@ -1,5 +1,4 @@
 const HttpError=require('../models/http-error')
-
 class Student {
   constructor(rno, name, batch, t1marks, t2marks, t3marks) {
     this.enrollno = rno;
@@ -28,7 +27,23 @@ function getStudentbyRno(req, res, next) {
     );
     throw err; //use return next(err) while working with asynchronous code i.e. when using database server with this
   }
-  res.json({ retstudent });
+  res.status(200).json({ retstudent });
 }
 
-module.exports = getStudentbyRno;
+function returnT1marks(req, res, next) {
+  const rollno = req.params.rno; //req.params returns object like { rno: '20103005' }
+  const retT1 = DUMMY_STUDENTS.find((s) => {
+    if (s.enrollno === rollno)
+      return s.t1marks;
+  });
+  if (!retT1) {
+    const err = new HttpError(
+      "Could not find student with specified enrollment no.",
+      404
+    );
+    throw err;
+  }
+  res.status(200).json({ retT1 });
+}
+
+module.exports = { getStudentbyRno, returnT1marks };

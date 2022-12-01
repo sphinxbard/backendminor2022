@@ -7,7 +7,7 @@ const router = express.Router();
 router.post(
   "/login",
   [check("email").isEmail(), check("password").notEmpty()],
-  user_controller
+  user_controller.login
 );
-
+router.post('/signup', user_controller.signup)
 module.exports = router;

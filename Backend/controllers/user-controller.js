@@ -1,13 +1,15 @@
 const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
 const User = require("../models/user");
+const bodyParser = require("body-parser");
 
 const login = async (req, res, next) => {
-  await User.findOne({ email: req.body.email }, function (err, user) {
+  const { email, password } = req.body;
+  await User.findOne({ email: email }, function (err, user) {
     if (user === null) {
       return next(new HttpError("User not found.", 400));
     } else {
-      if (user.validPassword(req.body.password)) {
+      if (user.validPassword(password)) {
         return res.status(201).send({
           message: "User Logged In",
         });
@@ -19,13 +21,14 @@ const login = async (req, res, next) => {
 };
 
 const signup = async (req, res, next) => {
+  const { name, email, password } = req.body;
   let newUser = new User();
-  (newUser.name = req.body.name), (newUser.email = req.body.email);
-  newUser.setPassword(req.body.password);
+  (newUser.name = name), (newUser.email = email);
+  newUser.setPassword(password);
 
-  newUser.save((err, User) => {
+  await newUser.save((err, User) => {
     if (err) {
-        return next(new HttpError('Signing up failed.', 401));
+      return next(new HttpError("Signing up failed.", 401));
     } else {
       return res.status(201).send({
         message: "User added successfully.",

@@ -3,9 +3,6 @@ const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
 const User = require("../models/user");
 
-let user1 = new User("Anisha", "20103005@mail.jiit.ac.in", "AJ20103005");
-DUMMY_USERS = [user1];
-
 const login = async (req, res, next) => {
   await User.findOne({ email : req.body.email }, function(err, user) {
         if (user === null) {
